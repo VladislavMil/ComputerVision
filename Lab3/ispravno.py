@@ -1,15 +1,16 @@
 import numpy as np
 import cv2 as cv
 
-slika1 = cv.imread('1.jpg')
-slika2 = cv.imread('2.jpg')
-slika3 = cv.imread('3.jpg')
+slika1 = cv.imread("1.jpg")
+slika2 = cv.imread("2.jpg")
+slika3 = cv.imread("3.jpg")
 
 
 def panorama_od_tri_slike():
     img = panorama_od_dve_slike(slika2, slika3)
     img = panorama_od_dve_slike(slika1, img)
     return img
+
 
 def panorama_od_dve_slike(imgL, imgR):
     detector = cv.SIFT_create()
@@ -22,7 +23,6 @@ def panorama_od_dve_slike(imgL, imgR):
     search_params = dict(checks=50)
     flann = cv.FlannBasedMatcher(index_params, search_params)
     matches = flann.knnMatch(des1, des2, k=2)
-
 
     good = []
     for m, n in matches:
@@ -40,10 +40,11 @@ def panorama_od_dve_slike(imgL, imgR):
     width = imgL.shape[1] + imgR.shape[1]
     height = imgL.shape[0] + int(imgR.shape[0] / 2)
     outimg = cv.warpPerspective(imgR, M, (width, height))
-    outimg[0:imgL.shape[0], 0:imgL.shape[1]] = imgL
+    outimg[0 : imgL.shape[0], 0 : imgL.shape[1]] = imgL
 
     outimg = trim(outimg)
     return outimg
+
 
 def trim(frame):
     if not np.sum(frame[0]):
@@ -55,6 +56,7 @@ def trim(frame):
     if not np.sum(frame[:, -1]):
         return trim(frame[:, :-2])
     return frame
+
 
 panorama = panorama_od_tri_slike()
 
