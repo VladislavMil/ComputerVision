@@ -27,6 +27,11 @@ def camera_calibration_from_images(image_names):
 
     all_ids = np.array(all_ids)
     counter = np.array(counter)
+    # ret_value	    Reprojection error (lower = better)
+    # camera_matrix	    Intrinsic parameters (fx, fy, cx, cy)
+    # dist_coeffs	    Lens distortion coefficients
+    # rvecs	    Rotation vectors per image
+    # tvecs	    Translation vectors per image
     ret_value, camera_matrix, dist_coeffs, rvecs, tvecs = aruco.calibrateCameraAruco(
         all_corners, all_ids, counter, board, img_size, None, None
     )
