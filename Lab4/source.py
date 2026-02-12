@@ -4,15 +4,16 @@ import matplotlib.pyplot as plt
 
 big_image = cv2.imread("./canvas.png")
 big_image = cv2.cvtColor(big_image, cv2.COLOR_BGR2RGB)
-# 98:817 543:1982
-cropped_image = big_image[100:820, 545:1985]
+
+# 288:1007, 385:1824
+cropped_image = big_image[285:1005, 385:1820]
 net = cv2.dnn.readNetFromCaffe(
-    "../GoogleNet/bvlc_googlenet.prototxt", "../GoogleNet/bvlc_googlenet.caffemodel"
+    "./GoogLeNet/bvlc_googlenet.prototxt", "./GoogLeNet/bvlc_googlenet.caffemodel"
 )
-with open("../GoogleNet/classification_classes_ILSVRC2012.txt", "r") as f:
+with open("./GoogLeNet/classification_classes_ILSVRC2012.txt", "r") as f:
     class_labels = f.read().strip().split("\n")
 sizes = [((180, 180), 180), ((360, 360), 360), ((720, 720), 720)]
-confidence_threshold = 60
+confidence_threshold = 90
 margin = 3
 for window_size, step_size in sizes:
     for y in range(0, cropped_image.shape[0] - window_size[1] + 1, step_size):
@@ -25,6 +26,7 @@ for window_size, step_size in sizes:
             confidence = preds[0][class_idx] * 100
             if confidence >= confidence_threshold:
                 class_label = class_labels[class_idx]
+                print(class_label, confidence)
                 if "dog" in class_label:
                     cv2.rectangle(
                         cropped_image,
@@ -59,7 +61,7 @@ for window_size, step_size in sizes:
                         (255, 0, 0),
                         2,
                     )
-# cv2.imwrite('output.jpg', cv2.cvtColor(cropped_image, cv2.COLOR_RGB2BGR))
+cv2.imwrite("output.jpg", cv2.cvtColor(cropped_image, cv2.COLOR_RGB2BGR))
 plt.imshow(cropped_image)
 plt.axis("off")
 plt.show()
